@@ -18,6 +18,7 @@
             --neon-cyan: #00f3ff;
             --neon-purple: #bc13fe;
             --alert-red: #ff003c;
+            --alert-orange: #ff9e00;
             --text-dim: #64748b;
             --text-bright: #e2e8f0;
         }
@@ -395,9 +396,9 @@
                         <h3 class="hacker-font text-lg text-white">OPSEC_SCANNER v1.0</h3>
                         <span class="status-dot bg-red-500 animate-pulse"></span>
                     </div>
-                    <p class="text-xs text-gray-400">Анализ операционной безопасности. Опишите вашу схему (прокси, карты, железо), чтобы выявить уязвимости.</p>
+                    <p class="text-xs text-gray-400">Анализ операционной безопасности. Опишите вашу схему, чтобы выявить уязвимости.</p>
                     
-                    <textarea id="opsecPrompt" class="ai-input w-full h-32 p-3 rounded text-sm resize-none" placeholder="ПРИМЕР: Я использую бесплатный VPN, зарегистрировал 5 аккаунтов на один номер и плачу через Kaspi Gold..."></textarea>
+                    <textarea id="opsecPrompt" class="ai-input w-full h-32 p-3 rounded text-sm resize-none" placeholder="ПРИМЕР: Я использую бесплатный VPN, зарегистрировал 5 аккаунтов на один номер..."></textarea>
                     
                     <button onclick="runOpsecScan()" class="ai-btn w-full py-3 rounded hover:shadow-[0_0_15px_rgba(0,243,255,0.5)]">
                         ✨ ЗАПУСТИТЬ СКАНЕР
@@ -418,7 +419,7 @@
                         <h3 class="hacker-font text-lg text-white">MIMICRY_ENGINE v2.1</h3>
                         <span class="status-dot bg-[#bc13fe] animate-pulse"></span>
                     </div>
-                    <p class="text-xs text-gray-400">Генерация "живого" контента для прогрева (Дни 8-14). Создает комментарии на сленге (RU/KZ mix).</p>
+                    <p class="text-xs text-gray-400">Генерация "живого" контента для прогрева. Создает комментарии на сленге (RU/KZ mix).</p>
                     
                     <div class="space-y-2">
                         <label class="text-[10px] text-gray-500 uppercase">Тематика Профиля</label>
@@ -440,6 +441,55 @@
                             <div class="text-[#bc13fe] text-xs animate-pulse">SYNTHESIZING IDENTITY...</div>
                         </div>
                         <div id="mimicryContent" class="markdown-body"></div>
+                    </div>
+                </div>
+
+                <!-- Module 3: TACTICAL PLANNER -->
+                <div class="cyber-card p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="hacker-font text-lg text-white">TACTICAL_PLANNER v3.0</h3>
+                        <span class="status-dot bg-[#ff9e00] animate-pulse"></span>
+                    </div>
+                    <p class="text-xs text-gray-400">Генератор 7-дневного плана "прогрева" (Warm-up) под конкретную нишу для повышения Trust Score.</p>
+                    
+                    <div class="space-y-2">
+                        <label class="text-[10px] text-gray-500 uppercase">Ниша (Niche)</label>
+                        <input type="text" id="tacticalNiche" placeholder="Например: Арбитраж, Товарка, Дейтинг..." class="ai-input w-full p-2 rounded text-sm">
+                    </div>
+                    
+                    <button onclick="runTactics()" class="ai-btn w-full py-3 rounded border-[#ff9e00] text-[#ff9e00] hover:bg-[#ff9e00] hover:text-white hover:shadow-[0_0_15px_rgba(255,158,0,0.5)]">
+                        ✨ РАЗРАБОТАТЬ ОПЕРАЦИЮ
+                    </button>
+
+                    <div id="tacticsOutput" class="ai-output-box p-4 rounded hidden overflow-y-auto max-h-64">
+                        <div id="tacticsLoader" class="hidden text-center py-4">
+                            <div class="loader mb-2" style="border-top-color: #ff9e00;"></div>
+                            <div class="text-[#ff9e00] text-xs animate-pulse">COMPILING STRATEGY...</div>
+                        </div>
+                        <div id="tacticsContent" class="markdown-body"></div>
+                    </div>
+                </div>
+
+                <!-- Module 4: SLANG CIPHER -->
+                <div class="cyber-card p-6 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="hacker-font text-lg text-white">SLANG_CIPHER v1.5</h3>
+                        <span class="status-dot bg-[#00f3ff] animate-pulse"></span>
+                    </div>
+                    <p class="text-xs text-gray-400">Лингвистическая маскировка. Переводит обычный текст в аутентичный сленг (Алматы/Юг) для DM-рассылок.</p>
+                    
+                    <textarea id="slangInput" class="ai-input w-full h-32 p-3 rounded text-sm resize-none" placeholder="Текст для перевода: Привет, как дела? Давай встретимся..."></textarea>
+                    
+                    <button onclick="runSlang()" class="ai-btn w-full py-3 rounded border-white text-white hover:bg-white hover:text-black hover:shadow-[0_0_15px_rgba(255,255,255,0.5)]">
+                        ✨ ЗАШИФРОВАТЬ СООБЩЕНИЕ
+                    </button>
+
+                    <div id="slangOutput" class="ai-output-box p-4 rounded hidden overflow-y-auto max-h-64">
+                        <div id="slangLoader" class="hidden text-center py-4">
+                            <div class="loader mb-2" style="border-top-color: #ffffff;"></div>
+                            <div class="text-white text-xs animate-pulse">ENCRYPTING SYNTAX...</div>
+                        </div>
+                        <div id="slangContent" class="markdown-body"></div>
                     </div>
                 </div>
 
@@ -559,7 +609,6 @@
 
         // --- GEMINI AI LOGIC ---
         
-        // Helper to get API Key
         function getApiKey() {
             const key = document.getElementById('apiKeyInput').value.trim();
             if (!key) {
@@ -569,41 +618,50 @@
             return key;
         }
 
-        // Helper for API Calls
         async function callGemini(apiKey, prompt) {
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             const payload = {
                 contents: [{ parts: [{ text: prompt }] }]
             };
             
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            
-            if (!response.ok) {
-                throw new Error(`HTTP Error: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            if (data.candidates && data.candidates.length > 0) {
-                return data.candidates[0].content.parts[0].text;
-            } else {
-                throw new Error('No response from AI');
+            // Retry Logic (Exponential Backoff)
+            let attempts = 0;
+            const maxAttempts = 5;
+            const delays = [1000, 2000, 4000, 8000, 16000];
+
+            while (attempts < maxAttempts) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP Error: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    if (data.candidates && data.candidates.length > 0) {
+                        return data.candidates[0].content.parts[0].text;
+                    } else {
+                        throw new Error('No response from AI');
+                    }
+                } catch (error) {
+                    attempts++;
+                    if (attempts >= maxAttempts) throw error;
+                    await new Promise(resolve => setTimeout(resolve, delays[attempts - 1]));
+                }
             }
         }
 
-        // 1. OPSEC SCANNER Function
+        // 1. OPSEC SCANNER
         async function runOpsecScan() {
             const apiKey = getApiKey();
             if (!apiKey) return;
 
             const userText = document.getElementById('opsecPrompt').value;
-            if (!userText) {
-                alert('Введите данные для анализа.');
-                return;
-            }
+            if (!userText) { alert('Введите данные.'); return; }
 
             const outputBox = document.getElementById('opsecOutput');
             const loader = document.getElementById('opsecLoader');
@@ -614,22 +672,11 @@
             content.innerHTML = '';
 
             const systemPrompt = `
-                Role: Cyberpunk Security Auditor for an SMM Farm in Kazakhstan.
-                Task: Analyze the user's setup description for anonymity leaks.
-                Context: User wants to be anonymous. Using personal data, free VPNs, or main bank cards is a CRITICAL failure.
-                Tone: Harsh, military, code-like. Russian language.
-                
+                Role: Cyberpunk Security Auditor for SMM Farm in Kazakhstan.
+                Task: Analyze user setup for anonymity leaks.
+                Tone: Harsh, military, Russian language.
                 Input: "${userText}"
-                
-                Output Format (Markdown):
-                ## STATUS: [SECURE / COMPROMISED]
-                **THREAT LEVEL:** [Low/High/Critical]
-                
-                ### DETECTED FAULTS:
-                * [List errors]
-                
-                ### PROTOCOL UPDATE:
-                [Short advice]
+                Output (Markdown): ## STATUS, **THREAT LEVEL**, ### DETECTED FAULTS, ### PROTOCOL UPDATE
             `;
 
             try {
@@ -642,13 +689,12 @@
             }
         }
 
-        // 2. MIMICRY ENGINE Function
+        // 2. MIMICRY ENGINE
         async function runMimicry() {
             const apiKey = getApiKey();
             if (!apiKey) return;
 
             const topic = document.getElementById('mimicryTopic').value;
-
             const outputBox = document.getElementById('mimicryOutput');
             const loader = document.getElementById('mimicryLoader');
             const content = document.getElementById('mimicryContent');
@@ -658,15 +704,11 @@
             content.innerHTML = '';
 
             const systemPrompt = `
-                Role: SMM Ghostwriter for Kazakhstan (Almaty region).
-                Task: Generate 5 short, natural, casual comments for Instagram/TikTok bots.
-                Style: Mix of Russian and Kazakh slang (Almaty dialect). Use lower case, maybe slight typos. Make them look real, not like bots.
+                Role: SMM Ghostwriter (Almaty).
+                Task: Generate 5 short, natural comments for Instagram bots.
+                Style: Mix of Russian and Kazakh slang (Almaty dialect).
                 Topic: ${topic}
-                
-                Output Format (Markdown list):
-                1. [Comment 1]
-                2. [Comment 2]
-                ...
+                Output (Markdown list): 1. [Comment]...
             `;
 
             try {
@@ -674,6 +716,76 @@
                 content.innerHTML = marked.parse(result);
             } catch (error) {
                 content.innerHTML = `<span style="color: #ff003c">CONNECTION LOST: ${error.message}</span>`;
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
+
+        // 3. TACTICAL PLANNER
+        async function runTactics() {
+            const apiKey = getApiKey();
+            if (!apiKey) return;
+
+            const niche = document.getElementById('tacticalNiche').value;
+            if (!niche) { alert('Введите нишу.'); return; }
+
+            const outputBox = document.getElementById('tacticsOutput');
+            const loader = document.getElementById('tacticsLoader');
+            const content = document.getElementById('tacticsContent');
+
+            outputBox.classList.remove('hidden');
+            loader.classList.remove('hidden');
+            content.innerHTML = '';
+
+            const systemPrompt = `
+                Role: SMM Strategist for Bot Farm.
+                Task: Generate a specific 7-day action plan (Warm-up protocol) to build Trust Score.
+                Niche: ${niche}
+                Language: Russian.
+                Format: Markdown Checklist.
+                Day 1: [Actions]
+                Day 2: [Actions]
+                ...
+            `;
+
+            try {
+                const result = await callGemini(apiKey, systemPrompt);
+                content.innerHTML = marked.parse(result);
+            } catch (error) {
+                content.innerHTML = `<span style="color: #ff9e00">CONNECTION LOST: ${error.message}</span>`;
+            } finally {
+                loader.classList.add('hidden');
+            }
+        }
+
+        // 4. SLANG CIPHER
+        async function runSlang() {
+            const apiKey = getApiKey();
+            if (!apiKey) return;
+
+            const text = document.getElementById('slangInput').value;
+            if (!text) { alert('Введите текст.'); return; }
+
+            const outputBox = document.getElementById('slangOutput');
+            const loader = document.getElementById('slangLoader');
+            const content = document.getElementById('slangContent');
+
+            outputBox.classList.remove('hidden');
+            loader.classList.remove('hidden');
+            content.innerHTML = '';
+
+            const systemPrompt = `
+                Role: Almaty Slang Translator / Rewriter.
+                Task: Rewrite the input text into authentic Almaty slang (Russian + Kazakh mix, words like 'jok', 'bazar jok', 'anau-mynau', 'zaeb').
+                Input: "${text}"
+                Output: Just the rewritten text in bold.
+            `;
+
+            try {
+                const result = await callGemini(apiKey, systemPrompt);
+                content.innerHTML = marked.parse(result);
+            } catch (error) {
+                content.innerHTML = `<span style="color: #fff">CONNECTION LOST: ${error.message}</span>`;
             } finally {
                 loader.classList.add('hidden');
             }
